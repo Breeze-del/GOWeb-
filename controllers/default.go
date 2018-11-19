@@ -9,7 +9,7 @@ type MainController struct {
 }
 
 func (c *MainController) Get() {
-	c.Data["Website"] = "beego.me"
-	c.Data["Email"] = "astaxie@gmail.com"
-	c.TplName = "index.tpl"
+	c.Ctx.WriteString("appname: " + beego.AppConfig.String("appname") +
+		"\nhttpport: " + beego.AppConfig.String("httpport"))
+	c.Ctx.WriteString("\nappname: " + beego.AppPath)
 }
