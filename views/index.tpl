@@ -87,9 +87,54 @@
       Contact me:
       <a class="email" href="mailto:{{.Email}}">{{.Email}}</a>
     </div>
+    {{/*GO模板用法*/}}
+    <div>
+        {{if .TrueCond}}
+        true condition
+        {{end}}
+    </div>
+    <div>
+        {{if .FalseCond}}
+        {{else}}
+        false condition
+        {{end}}
+    </div>
+      <div>
+          {{.User.Name}};{{.User.Age}}
+      </div>
+    {{/*输出一个结构体*/}}
+      <div>
+          {{with .User}}
+                  {{.Name}};{{.Age}}{{.Sex}}
+          {{end}}
+      </div>
+      <div>
+          {{.nums}}
+      </div>
+    {{/*循环打印*/}}
+      <div>
+          {{range .nums}}
+            {{.}}
+          {{end}}
+      </div>
+      {{/*模板变量*/}}
+      <div>
+          {{$tplvar := .TplVar}}
+          {{$tplvar}}
+      </div>
+      {{/*字符串转html*/}}
+      {{str2html .html}}
+      {{/*模板嵌套*/}}
+      {{template "test"}}
   </footer>
   <div class="backdrop"></div>
 
   <script src="/static/js/reload.min.js"></script>
 </body>
 </html>
+
+        {{define "test"}}
+        <div>
+            this is test template
+        </div>
+        {{end}}
