@@ -1,16 +1,13 @@
 package models
 
 import (
-	"github.com/CommonFuc/com"
 	"github.com/astaxie/beego/orm"
-	"os"
-	"path"
 	"time"
 )
 
 const (
 	_DB_NAME        = "data/beeblog.db"
-	_SQLITE3_DRIVER = "sqlite3"
+	_SQLITE3_DRIVER = "mysql"
 )
 
 // 建立数据库 sqlite3
@@ -46,16 +43,18 @@ type Topic struct {
 
 // 创建目录
 func RegisterDB() {
-	// 判断文件是否存在
-	if !com.IsExist(_DB_NAME) {
-		// 创建目录  path.Dir 取出目录的路径
-		os.MkdirAll(path.Dir(_DB_NAME), os.ModePerm)
-		os.Create(_DB_NAME)
-	}
+	//// 判断文件是否存在
+	//if !com.IsExist(_DB_NAME) {
+	//	// 创建目录  path.Dir 取出目录的路径
+	//	os.MkdirAll(path.Dir(_DB_NAME), os.ModePerm)
+	//	os.Create(_DB_NAME)
+	//}
+	// 一下是beego通用的注册数据库的方法
 	// 注册模型
 	orm.RegisterModel(new(Category), new(Topic))
 	// 使用beego中的orm中数据库驱动引擎
-	orm.RegisterDriver(_SQLITE3_DRIVER, orm.DRSqlite)
+	orm.RegisterDriver(_SQLITE3_DRIVER, orm.DRMySQL)
 	// 创建数据库名字 强制有一个数据库必须是default
-	orm.RegisterDataBase("default", _SQLITE3_DRIVER, _DB_NAME, 10)
+	orm.RegisterDataBase("default", _SQLITE3_DRIVER, "root:ainiyu@/default?charset=utf8")
+	// 密码为ainiyu 数据库名字为 default
 }
