@@ -49,7 +49,7 @@ func RegisterDB() {
 	//	os.MkdirAll(path.Dir(_DB_NAME), os.ModePerm)
 	//	os.Create(_DB_NAME)
 	//}
-	// 一下是beego通用的注册数据库的方法
+	// 以下是beego通用的注册数据库的方法
 	// 注册模型
 	orm.RegisterModel(new(Category), new(Topic))
 	// 使用beego中的orm中数据库驱动引擎
