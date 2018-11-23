@@ -6,7 +6,6 @@ import (
 )
 
 const (
-	_DB_NAME        = "data/beeblog.db"
 	_SQLITE3_DRIVER = "mysql"
 )
 
@@ -56,5 +55,5 @@ func RegisterDB() {
 	orm.RegisterDriver(_SQLITE3_DRIVER, orm.DRMySQL)
 	// 创建数据库名字 强制有一个数据库必须是default
 	orm.RegisterDataBase("default", _SQLITE3_DRIVER, "root:ainiyu@/default?charset=utf8")
-	// 密码为ainiyu 数据库名字为 default
+	// 账号为root 密码为ainiyu 数据库名字为 default
 }

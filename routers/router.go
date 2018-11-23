@@ -15,13 +15,13 @@ func init() {
 	// 第三个参数为路由匹配方法 *: 为任何访问的匹配这个方法
 
 	// 固定路由方法 方法交给controller取实现
-	beego.Router("/", &controllers.MainController{})
+	beego.Router("/", &controllers.HomeController{})
 	// 基本路由方法
 	beego.Get("/hello", func(ctx *context.Context) {
 		ctx.Output.Body([]byte("hello world"))
 	})
-
 	// namespace路由 好处是集中管理路由 可以使用过滤器和判断条件 比较方便
+	// NSCond 执行下面路由前执行的判断条件方法
 	ns := beego.NewNamespace("/v1",
 		beego.NSCond(func(ctx *context.Context) bool {
 			if ctx.Input.Context.Request.UserAgent() != "" {
