@@ -12,7 +12,7 @@ func (c *MainController) Get() {
 	// 这里的值会在index.tpl中被用到
 	c.TplName = "index.tpl"
 	c.Data["Website"] = "beego.me"
-	c.Data["Email"] = "astaxie@..."
+	c.Data["Email"] = "astaxie@...d"
 	c.Data["TrueCond"] = true
 	c.Data["FalseCond"] = false
 	// 结构体
