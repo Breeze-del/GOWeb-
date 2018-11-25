@@ -8,4 +8,5 @@ type HomeController struct {
 
 func (c *HomeController) Get() {
 	c.TplName = "home.html"
+	c.Data["isHome"] = true
 }

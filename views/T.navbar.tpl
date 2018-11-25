@@ -6,10 +6,10 @@
             <li {{if .IsHome}} class="active" {{end}}>
                 <a href="/">首页</a>
             </li>
-            <li {{if .IsHome}} class="active" {{end}}>
+            <li {{if .IScategory}} class="active" {{end}}>
                 <a href="/category">分类</a>
             </li>
-            <li {{if .IsHome}} class="active" {{end}}>
+            <li {{if .IStopic}} class="active" {{end}}>
                 <a href="/topic">文章</a>
             </li>
         </ul>
