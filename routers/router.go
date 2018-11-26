@@ -32,7 +32,7 @@ func init() {
 			}
 			return false
 		}),
-		beego.NSGet("/hello", func(ctx *context.Context) {
+		beego.NSGet("/hell", func(ctx *context.Context) {
 			ctx.Output.Body([]byte("hello world"))
 		}),
 		beego.NSRouter("/beego", &controllers.MainController{}),
