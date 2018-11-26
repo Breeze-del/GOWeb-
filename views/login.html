@@ -7,22 +7,42 @@
 <body>
     <div class="container" style="width: 500px">
         {{/*post方法提交表单到/login中去*/}}
+        {{/*id 可用于javascript获取值  name用于发送到后台，后代用来接收得key*/}}
         <form role="form" method="post" action="/login">
             <div class="form-group">
                 <label >Accounts</label>
-                <input class="form-control"  placeholder="Enter account" name="usname">
+                <input id="usname" class="form-control"  placeholder="Enter account" name="usname">
             </div>
             <div class="form-group">
                 <label >Password</label>
-                <input type="password" class="form-control"  placeholder="Password" name="password">
+                <input id="password" type="password" class="form-control"  placeholder="Password" name="password">
             </div>
             <div class="checkbox">
                 <label>
                     <input type="checkbox" name="autologin"> 自动登陆
                 </label>
             </div>
-            <button type="submit" class="btn btn-default">登陆</button>
+            {{/*return checkInput 如果为false 那么就不会跳转到其他页面上去*/}}
+            <button type="submit" class="btn btn-default" onclick="return checkInput();">登陆</button>
         </form>
+        {{/*判断account输入不为空*/}}
+        <script type="text/javascript">
+            function checkInput() {
+                var usname = document.getElementById("usname");
+                var password = document.getElementById("password");
+                console.log(usname);
+                console.log(password);
+                if (usname.value.length == 0) {
+                    alert("请输入账号");
+                    return false;
+                }
+                if (password.value.length == 0) {
+                    alert("请输入密码");
+                    return false;
+                }
+                return true;
+            }
+        </script>
     </div>
 </body>
 </html>
