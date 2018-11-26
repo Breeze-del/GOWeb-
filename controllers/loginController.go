@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 )
@@ -11,12 +12,14 @@ type LoginController struct {
 
 func (c *LoginController) Get() {
 	// 获取是不是退出
-	isExit := c.Input().Get("exit") == "true"
-	if isExit {
+	// 为true会路由失败 我不知道为什么
+	isExit := c.Input().Get("exit")
+	fmt.Println(isExit)
+	if isExit == "True" {
 		// 立即删除cookie保留得信息
-		c.Ctx.SetCookie("usname", "", -1, "/")
-		c.Ctx.SetCookie("password", "", -1, "/")
-		c.Redirect("/", 301)
+		c.Ctx.SetCookie("usname", " ", -1, "/")
+		c.Ctx.SetCookie("password", " ", -1, "/")
+		c.Redirect("/", 302)
 		return
 	}
 	c.TplName = "login.html"

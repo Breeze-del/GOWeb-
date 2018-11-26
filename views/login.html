@@ -22,8 +22,9 @@
                     <input type="checkbox" name="autologin"> 自动登陆
                 </label>
             </div>
-            {{/*return checkInput 如果为false 那么就不会跳转到其他页面上去*/}}
+            {{/*return checkInput 如果为false 不会提交表单 也就不会跳转到主页上去*/}}
             <button type="submit" class="btn btn-default" onclick="return checkInput();">登陆</button>
+            <button type="submit" class="btn btn-default" onclick="return ToHome();">返回</button>
         </form>
         {{/*判断account输入不为空*/}}
         <script type="text/javascript">
@@ -41,6 +42,12 @@
                     return false;
                 }
                 return true;
+            }
+            
+            function ToHome() {
+                // 当前页面打开网址 实现一个跳转
+                window.location.href = "/";
+                return false;
             }
         </script>
     </div>

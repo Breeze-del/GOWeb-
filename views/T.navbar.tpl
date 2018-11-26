@@ -21,7 +21,7 @@
                 {{if .IsLogin}}
                     {{/*点击退出时候，get访问主页并附带了exit=true，主页通过获取到这个值*/}}
                     {{/*来确定是不是退出状态    */}}
-                    <li><a href="/login?exit=true">退出</a> </li>
+                    <li><a href="/login?exit=True">退出</a> </li>
                 {{else}}
                     <li><a href="/login">管理员登陆</a></li>
                 {{end}}

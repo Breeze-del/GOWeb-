@@ -9,9 +9,8 @@ type HomeController struct {
 }
 
 func (c *HomeController) Get() {
-	c.TplName = "home.html"
 	// 首页阴影强调
 	c.Data["IsHome"] = true
-
 	c.Data["IsLogin"] = checkAccount(c.Ctx)
+	c.TplName = "home.html"
 }
