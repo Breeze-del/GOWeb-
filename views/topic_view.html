@@ -1,0 +1,13 @@
+{{template "header"}}
+<title>{{.topic.Title}} -  我的博客</title>
+</head>
+<body>
+{{template "navbar".}}
+<div class="container">
+    <h1>{{.topic.Title}}<a href="/topic/modify?tid={{.tid}}" class="btn btn-default">修改文章</a></h1>
+    {{.topic.Content}}
+</div>
+<script type="text/javascript" src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+</body>
+</html>

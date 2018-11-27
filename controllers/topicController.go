@@ -29,8 +29,15 @@ func (c *TopicController) Post() {
 	}
 	title := c.Input().Get("title")
 	content := c.Input().Get("content")
+	tid := c.Input().Get("tid")
 	var err error
-	err = models.AddTopic(title, content)
+	if len(tid) == 0 {
+		// 不存在 是添加操作
+		err = models.AddTopic(title, content)
+	} else {
+		// 存在tid 说明是修改操作
+		err = models.ModifyTopic(tid, title, content)
+	}
 	if err != nil {
 		beego.Error(err)
 	}
@@ -41,4 +48,32 @@ func (c *TopicController) Post() {
 func (c *TopicController) Add() {
 	c.TplName = "topic_add.html"
 	c.Data["IsLogin"] = checkAccount(c.Ctx)
+}
+
+// 预览文章
+func (c *TopicController) View() {
+	topic, err := models.GetTopic(c.Ctx.Input.Param("0"))
+	if err != nil {
+		beego.Error(err.Error())
+		c.Redirect("/", 302)
+		return
+	}
+	c.Data["topic"] = topic
+	// 不知道为什么模板data topicId不能识别
+	c.Data["tid"] = c.Ctx.Input.Param("0")
+	c.TplName = "topic_view.html"
+}
+
+// 修改文章
+func (c *TopicController) Modify() {
+	tid := c.Input().Get("tid")
+	topic, err := models.GetTopic(tid)
+	if err != nil {
+		beego.Error(err.Error())
+		c.Redirect("/", 302)
+		return
+	}
+	c.Data["topic"] = topic
+	c.Data["tid"] = tid
+	c.TplName = "topic_modify.html"
 }

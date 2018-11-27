@@ -141,3 +141,44 @@ func GetAllTopics(isDesc bool) ([]*Topic, error) {
 	}
 	return nil, nil
 }
+
+// 通过id获取到文章
+func GetTopic(id string) (*Topic, error) {
+	Id, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	orm := orm.NewOrm()
+	topic := new(Topic)
+	qs := orm.QueryTable("topic")
+	err = qs.Filter("id", Id).One(topic)
+	if err != nil {
+		return nil, err
+	}
+
+	topic.Views++
+	_, err = orm.Update(topic)
+	return topic, err
+}
+
+// 修改更新文章
+func ModifyTopic(tid, title, content string) error {
+	IdNum, err := strconv.ParseInt(tid, 10, 64)
+	if err != nil {
+		return err
+	}
+	orm := orm.NewOrm()
+	topic := &Topic{
+		Id: IdNum,
+	}
+	err1 := orm.Read(topic)
+	// err1==nil 说明找到了id为idnum的记录 然后进行修改
+	if err1 == nil {
+		topic.Title = title
+		topic.Content = content
+		topic.Updated = time.Now()
+		_, err2 := orm.Update(topic)
+		return err2
+	}
+	return nil
+}

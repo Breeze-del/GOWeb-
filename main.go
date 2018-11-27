@@ -20,7 +20,7 @@ func main() {
 	orm.RunSyncdb("default", false, true)
 
 	//需要输入两个路径  调试得时候才能加载到views和static文件
-	//beego.BConfig.WebConfig.ViewsPath="F:/Go_Web01/src/myapp/views"
-	//beego.SetStaticPath("/static","F:/Go_Web01/src/myapp/static")
+	beego.BConfig.WebConfig.ViewsPath = "F:/Go_Web01/src/myapp/views"
+	beego.SetStaticPath("/static", "F:/Go_Web01/src/myapp/static")
 	beego.Run()
 }
