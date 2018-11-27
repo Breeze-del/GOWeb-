@@ -7,10 +7,10 @@
                 <li {{if .IsHome}} class="active" {{end}}>
                     <a href="/">首页</a>
                 </li>
-                <li {{if .IScategory}} class="active" {{end}}>
+                <li {{if .IsCategory}} class="active" {{end}}>
                     <a href="/category">分类</a>
                 </li>
-                <li {{if .IStopic}} class="active" {{end}}>
+                <li {{if .IsTopic}} class="active" {{end}}>
                     <a href="/topic">文章</a>
                 </li>
             </ul>

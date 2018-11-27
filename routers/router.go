@@ -17,6 +17,7 @@ func init() {
 	// 固定路由方法 方法交给controller取实现
 	beego.Router("/", &controllers.HomeController{})
 	beego.Router("/login", &controllers.LoginController{})
+	beego.Router("/category", &controllers.CategoryController{})
 
 	// 基本路由方法
 	beego.Get("/hello", func(ctx *context.Context) {
