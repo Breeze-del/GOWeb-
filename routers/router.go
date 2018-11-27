@@ -18,6 +18,7 @@ func init() {
 	beego.Router("/", &controllers.HomeController{})
 	beego.Router("/login", &controllers.LoginController{})
 	beego.Router("/category", &controllers.CategoryController{})
+	beego.Router("/topic", &controllers.TopicContrpller{})
 
 	// 基本路由方法
 	beego.Get("/hello", func(ctx *context.Context) {
