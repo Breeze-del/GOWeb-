@@ -59,13 +59,15 @@ func RegisterDB() {
 	// 账号为root 密码为ainiyu 数据库名字为 default
 }
 
-// 数据库操作--添加
+// ***********************category 操作**************************
+// 数据库操作--添加category
 func AddCategory(name string) error {
 	// 初始化orm
 	orm := orm.NewOrm()
 	// 必须要是指针的形式
 	cate := &Category{
-		Title: name,
+		Title:   name,
+		Created: time.Now(),
 	}
 	// 查询name是不是已经存在
 	qs := orm.QueryTable("category")
@@ -107,4 +109,35 @@ func GetAllCategories() ([]*Category, error) {
 	qs := orm.QueryTable("category")
 	_, err := qs.All(&cates)
 	return cates, err
+}
+
+// ***********************topic 操作**************************
+// 添加topic到数据库
+func AddTopic(title, content string) error {
+	orm := orm.NewOrm()
+	topic := &Topic{
+		Title:   title,
+		Content: content,
+		Created: time.Now(),
+		Updated: time.Now(),
+	}
+	_, err := orm.Insert(topic)
+	return err
+}
+
+// 获得所有topics
+// 参数：true表示按创建时间反序排列 false表示按照id正序排列
+func GetAllTopics(isDesc bool) ([]*Topic, error) {
+	orm := orm.NewOrm()
+	topics := make([]*Topic, 0)
+	qs := orm.QueryTable("topic")
+	if isDesc {
+		// orderBy 对查询结果进行排序 +正序 -反序
+		_, err := qs.OrderBy("-created").All(topics)
+		return topics, err
+	} else {
+		_, err := qs.All(&topics)
+		return topics, err
+	}
+	return nil, nil
 }

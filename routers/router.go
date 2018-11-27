@@ -18,7 +18,9 @@ func init() {
 	beego.Router("/", &controllers.HomeController{})
 	beego.Router("/login", &controllers.LoginController{})
 	beego.Router("/category", &controllers.CategoryController{})
-	beego.Router("/topic", &controllers.TopicContrpller{})
+	// 自动路由 规则： 识别controller，当url访问到topic时，利用反射到topicController下去寻找方法
+	beego.Router("/topic", &controllers.TopicController{})
+	beego.AutoRouter(&controllers.TopicController{})
 
 	// 基本路由方法
 	beego.Get("/hello", func(ctx *context.Context) {

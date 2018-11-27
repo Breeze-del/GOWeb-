@@ -1,19 +1,18 @@
 {{template "header"}}
     <title>首页 - 我的博客</title>
-    <style text="text/css">
-        body { padding-top: 70px; }
-    </style>
 </head>
 <body>
     {{template "navbar" .}}
     <div class="container">
+        {{range .topics}}
         <div class="page-header">
-            <h1>我的第一篇博客</h1>
-            <h6 class="text-muted">文章发表于 2013年 x月 x日 xx::xx 共有200次浏览 100条评论</h6>
+            <h1>{{.Title}}</h1>
+            <h6 class="text-muted">文章发表于 {{.Created}} 共有{{.Views}}次浏览 {{.ReplyCount}}条评论</h6>
             <p>
-                大家好，这是我的第一篇博客，多谢观看!
+                {{.Content}}
             </p>
         </div>
+        {{end}}
     </div>
     <script type="text/javascript" src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
