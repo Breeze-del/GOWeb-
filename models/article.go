@@ -25,9 +25,10 @@ type Category struct {
 }
 
 type Topic struct {
-	Id    int64
-	Uid   int64
-	Title string
+	Id       int64
+	Uid      int64
+	Title    string
+	Category string
 	// 建表 大小5000
 	Content string `orm:"size(5000)"`
 	// 附件
@@ -113,13 +114,14 @@ func GetAllCategories() ([]*Category, error) {
 
 // ***********************topic 操作**************************
 // 添加topic到数据库
-func AddTopic(title, content string) error {
+func AddTopic(title, content, category string) error {
 	orm := orm.NewOrm()
 	topic := &Topic{
-		Title:   title,
-		Content: content,
-		Created: time.Now(),
-		Updated: time.Now(),
+		Title:    title,
+		Content:  content,
+		Created:  time.Now(),
+		Updated:  time.Now(),
+		Category: category,
 	}
 	_, err := orm.Insert(topic)
 	return err
@@ -162,7 +164,7 @@ func GetTopic(id string) (*Topic, error) {
 }
 
 // 修改更新文章
-func ModifyTopic(tid, title, content string) error {
+func ModifyTopic(tid, title, content, category string) error {
 	IdNum, err := strconv.ParseInt(tid, 10, 64)
 	if err != nil {
 		return err
@@ -175,6 +177,7 @@ func ModifyTopic(tid, title, content string) error {
 	// err1==nil 说明找到了id为idnum的记录 然后进行修改
 	if err1 == nil {
 		topic.Title = title
+		topic.Category = category
 		topic.Content = content
 		topic.Updated = time.Now()
 		_, err2 := orm.Update(topic)

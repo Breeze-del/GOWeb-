@@ -13,6 +13,7 @@
         <tr>
             <th>#id</th>
             <th>文章名称</th>
+            <th>文章类别</th>
             <th>最后更新</th>
             <th>浏览</th>
             <th>回复数</th>
@@ -24,10 +25,11 @@
             <tr>
                 <th>{{ .Id}}</th>
                 <th>{{ .Title}}</th>
+                <th>{{ .Category}}</th>
                 <th>{{ .Updated}}</th>
                 <th>{{ .Views}}</th>
                 <th>{{ .ReplyCount}}</th>
-                <th><a href="/topic/delete/{{.Id}}">删除</a> </th>
+                <th><a href="/topic/delete/{{.Id}}">删除</a>/ <a href="/topic/view/{{.Id}}">修改</a> </th>
             </tr>
         {{end}}
         </tbody>

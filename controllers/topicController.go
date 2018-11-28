@@ -30,14 +30,15 @@ func (c *TopicController) Post() {
 	}
 	title := c.Input().Get("title")
 	content := c.Input().Get("content")
+	category := c.Input().Get("category")
 	tid := c.Input().Get("tid")
 	var err error
 	if len(tid) == 0 {
 		// 不存在 是添加操作
-		err = models.AddTopic(title, content)
+		err = models.AddTopic(title, content, category)
 	} else {
 		// 存在tid 说明是修改操作
-		err = models.ModifyTopic(tid, title, content)
+		err = models.ModifyTopic(tid, title, content, category)
 	}
 	if err != nil {
 		beego.Error(err)
