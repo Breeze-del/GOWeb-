@@ -157,7 +157,7 @@ func GetTopic(id string) (*Topic, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	// 浏览数加1
 	topic.Views++
 	_, err = orm.Update(topic)
 	return topic, err
