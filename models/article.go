@@ -182,3 +182,17 @@ func ModifyTopic(tid, title, content string) error {
 	}
 	return nil
 }
+
+// 删除文章
+func DeleteTopic(tid string) error {
+	IdNum, err := strconv.ParseInt(tid, 10, 64)
+	if err != nil {
+		return err
+	}
+	orm := orm.NewOrm()
+	topic := &Topic{
+		Id: IdNum,
+	}
+	_, err1 := orm.Delete(topic)
+	return err1
+}

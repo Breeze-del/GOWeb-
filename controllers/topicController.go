@@ -21,6 +21,7 @@ func (c *TopicController) Get() {
 	c.TplName = "topic.html"
 }
 
+// post提交表单处理方法
 func (c *TopicController) Post() {
 	// 数据库操作之前先检查是否是处于登陆的状态
 	if !(checkAccount(c.Ctx)) {
@@ -50,7 +51,7 @@ func (c *TopicController) Add() {
 	c.Data["IsLogin"] = checkAccount(c.Ctx)
 }
 
-// 预览文章
+// 预览文章 -- topic/view/123
 func (c *TopicController) View() {
 	topic, err := models.GetTopic(c.Ctx.Input.Param("0"))
 	if err != nil {
@@ -64,7 +65,7 @@ func (c *TopicController) View() {
 	c.TplName = "topic_view.html"
 }
 
-// 修改文章
+// 修改文章-- /topic/modify?tid=
 func (c *TopicController) Modify() {
 	tid := c.Input().Get("tid")
 	topic, err := models.GetTopic(tid)
@@ -76,4 +77,17 @@ func (c *TopicController) Modify() {
 	c.Data["topic"] = topic
 	c.Data["tid"] = tid
 	c.TplName = "topic_modify.html"
+}
+
+// 删除文章
+func (c *TopicController) Delete() {
+	if !(checkAccount(c.Ctx)) {
+		c.Redirect("/login", 302)
+		return
+	}
+	err := models.DeleteTopic(c.Ctx.Input.Param("0"))
+	if err != nil {
+		beego.Error(err.Error())
+	}
+	c.Redirect("/", 302)
 }
