@@ -11,8 +11,13 @@
     </div>
 
     <div class="container">
+        {{range .Replies}}
+        <h3>{{.Nickname}}</h3>
+        {{.Content}}
+        {{end}}
+
         <h3>本文回复：</h3>
-        <form method="post" action="reply/add">
+        <form method="post" action="/reply/add">
             <input type="hidden" name="tid" value="{{.topic.Id}}">
             <div class="form-group">
                 <label>显示昵称：</label>

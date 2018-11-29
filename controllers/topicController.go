@@ -54,7 +54,8 @@ func (c *TopicController) Add() {
 
 // 预览文章 -- topic/view/123
 func (c *TopicController) View() {
-	topic, err := models.GetTopic(c.Ctx.Input.Param("0"))
+	tid := c.Ctx.Input.Param("0")
+	topic, err := models.GetTopic(tid)
 	if err != nil {
 		beego.Error(err.Error())
 		c.Redirect("/", 302)
@@ -62,7 +63,15 @@ func (c *TopicController) View() {
 	}
 	c.Data["topic"] = topic
 	// 不知道为什么模板data topicId不能识别
-	c.Data["tid"] = c.Ctx.Input.Param("0")
+	c.Data["tid"] = tid
+	//  获取所有评论
+	replies, err1 := models.GetAllReplies(tid)
+	if err1 != nil {
+		beego.Error(err.Error())
+		return
+	}
+	c.Data["IsLogin"] = checkAccount(c.Ctx)
+	c.Data["Replies"] = replies
 	c.TplName = "topic_view.html"
 }
 
@@ -77,6 +86,7 @@ func (c *TopicController) Modify() {
 	}
 	c.Data["topic"] = topic
 	c.Data["tid"] = tid
+	c.Data["IsLogin"] = checkAccount(c.Ctx)
 	c.TplName = "topic_modify.html"
 }
 

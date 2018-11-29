@@ -11,6 +11,7 @@ const (
 )
 
 // 建立数据库 mysql
+// orm方法 insert增 delete删 update改 查read 查多个queryTable（）Filter（）All（）
 type Category struct {
 	Id    int64
 	Title string
@@ -52,7 +53,7 @@ func RegisterDB() {
 	//}
 	// 以下是beego通用的注册数据库的方法
 	// 注册模型
-	orm.RegisterModel(new(Category), new(Topic))
+	orm.RegisterModel(new(Category), new(Topic), new(Reply))
 	// 使用beego中的orm中数据库驱动引擎
 	orm.RegisterDriver(_SQLITE3_DRIVER, orm.DRMySQL)
 	// 创建数据库名字 强制有一个数据库必须是default

@@ -16,7 +16,7 @@ func init() {
 func main() {
 	// 开启debug模式
 	orm.Debug = true
-	// 自动建表 将结果在terminal上显示
+	// 自动建表 第一个参数 数据库名字 第二个参数 是否先删除表再建立表 第三个参数 是否将执行过程打印在terminal
 	orm.RunSyncdb("default", false, true)
 
 	//需要输入两个路径  调试得时候才能加载到views和static文件

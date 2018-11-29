@@ -21,6 +21,8 @@ func init() {
 	// 自动路由 规则： 识别controller，当url访问到topic时，利用反射到topicController下去寻找方法
 	beego.Router("/topic", &controllers.TopicController{})
 	beego.AutoRouter(&controllers.TopicController{})
+	// Reply 的自动路由
+	beego.AutoRouter(&controllers.ReplyController{})
 
 	// 基本路由方法
 	beego.Get("/hello", func(ctx *context.Context) {
