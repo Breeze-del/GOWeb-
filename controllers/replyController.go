@@ -24,3 +24,17 @@ func (c *ReplyController) Add() {
 	}
 	c.Redirect(fmt.Sprint("/topic/view/", id), 302)
 }
+
+func (c *ReplyController) Delete() {
+	if !(checkAccount(c.Ctx)) {
+		c.Redirect("/login", 302)
+		return
+	}
+	id := c.Ctx.Input.Param("0")
+	tid := c.Ctx.Input.Param("1")
+	err := models.DeleteReply(id)
+	if err != nil {
+		return
+	}
+	c.Redirect("/topic/view/"+tid, 302)
+}

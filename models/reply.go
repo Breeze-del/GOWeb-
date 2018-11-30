@@ -42,6 +42,23 @@ func AddReply(id, nickname, content string) error {
 	return err1
 }
 
+// 删除评论
+func DeleteReply(id string) error {
+	o := orm.NewOrm()
+	idNum, err := S2int64(id)
+	if err != nil {
+		return err
+	}
+	reply := &Reply{
+		Id: idNum,
+	}
+	_, err1 := o.Delete(reply)
+	if err1 != nil {
+		return err1
+	}
+	return nil
+}
+
 // 获取所有的评论
 func GetAllReplies(tid string) ([]*Reply, error) {
 	id, err := S2int64(tid)

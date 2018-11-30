@@ -11,8 +11,12 @@
     </div>
 
     <div class="container">
+        {{/*获取到topic的id值*/}}
+        {{$tid := .topic.Id}}
+        {{$islogin := .IsLogin}}
         {{range .Replies}}
-        <h3>{{.Nickname}}</h3>
+        <h3>{{.Nickname}}<small>{{.Created}}
+                {{if $islogin}}<a href="/reply/delete/{{.Id}}/{{$tid}}">删除</a>{{end}}</small></h3>
         {{.Content}}
         {{end}}
 
