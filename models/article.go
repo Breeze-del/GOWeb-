@@ -130,7 +130,7 @@ func AddTopic(title, content, category string) error {
 
 // 获得所有topics
 // 参数：true表示按创建时间反序排列 false表示按照id正序排列
-func GetAllTopics(isDesc bool) ([]*Topic, error) {
+func GetAllTopics(cate string, isDesc bool) ([]*Topic, error) {
 	orm := orm.NewOrm()
 	topics := make([]*Topic, 0)
 	qs := orm.QueryTable("topic")
@@ -139,6 +139,10 @@ func GetAllTopics(isDesc bool) ([]*Topic, error) {
 		_, err := qs.OrderBy("-created").All(topics)
 		return topics, err
 	} else {
+		if len(cate) > 0 {
+			// 保留下qs 就是保留下数据库操作的结果
+			qs = qs.Filter("category", cate)
+		}
 		_, err := qs.All(&topics)
 		return topics, err
 	}

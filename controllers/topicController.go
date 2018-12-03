@@ -13,7 +13,7 @@ type TopicController struct {
 func (c *TopicController) Get() {
 	c.Data["IsTopic"] = true
 	c.Data["IsLogin"] = checkAccount(c.Ctx)
-	topics, err := models.GetAllTopics(false)
+	topics, err := models.GetAllTopics("", false)
 	if err != nil {
 		beego.Error(err.Error())
 	}
