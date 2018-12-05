@@ -30,7 +30,7 @@ func init() {
 	})
 
 	// namespace路由 好处是集中管理路由 可以使用过滤器和判断条件 比较方便
-	// NSCond 执行下面路由前执行的判断条件方法
+	// NSCond 执行下面路由前执行的判断条件方法的
 	ns := beego.NewNamespace("/v1",
 		beego.NSCond(func(ctx *context.Context) bool {
 			if ctx.Input.Context.Request.UserAgent() != "" {
