@@ -32,7 +32,7 @@ func (c *ReplyController) Delete() {
 	}
 	id := c.Ctx.Input.Param("0")
 	tid := c.Ctx.Input.Param("1")
-	err := models.DeleteReply(id)
+	err := models.DeleteReply(id, tid)
 	if err != nil {
 		return
 	}

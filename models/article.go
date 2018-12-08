@@ -125,6 +125,21 @@ func AddTopic(title, content, category string) error {
 		Category: category,
 	}
 	_, err := orm.Insert(topic)
+	if err != nil {
+		return err
+	}
+	// 更新分类统计
+	cate := new(Category)
+	qs := orm.QueryTable("category")
+	err = qs.Filter("title", category).One(cate)
+	if err == nil {
+		// 如果存在，修改文章个数，然后更新记录
+		cate.TopicCount++
+		_, err = orm.Update(cate)
+		if err != nil {
+			return err
+		}
+	}
 	return err
 }
 
@@ -174,6 +189,8 @@ func ModifyTopic(tid, title, content, category string) error {
 	if err != nil {
 		return err
 	}
+	// 表示未修改之前的分类
+	var oldCate string
 	orm := orm.NewOrm()
 	topic := &Topic{
 		Id: IdNum,
@@ -181,12 +198,34 @@ func ModifyTopic(tid, title, content, category string) error {
 	err1 := orm.Read(topic)
 	// err1==nil 说明找到了id为idnum的记录 然后进行修改
 	if err1 == nil {
+		oldCate = topic.Category
+
 		topic.Title = title
 		topic.Category = category
 		topic.Content = content
 		topic.Updated = time.Now()
 		_, err2 := orm.Update(topic)
-		return err2
+		if err2 != nil {
+			return err2
+		}
+	}
+	// 更新旧的分类统计
+	if len(oldCate) > 0 {
+		cate := new(Category)
+		qs := orm.QueryTable("category")
+		err = qs.Filter("title", oldCate).One(cate)
+		if err == nil {
+			cate.TopicCount--
+			_, err = orm.Update(cate)
+		}
+	}
+	// 更新新的分类统计
+	cag := new(Category)
+	qs := orm.QueryTable("category")
+	err = qs.Filter("title", category).One(cag)
+	if err == nil {
+		cag.TopicCount++
+		_, err = orm.Update(cag)
 	}
 	return nil
 }
@@ -201,6 +240,21 @@ func DeleteTopic(tid string) error {
 	topic := &Topic{
 		Id: IdNum,
 	}
-	_, err1 := orm.Delete(topic)
-	return err1
+	// 查询出文章
+	if orm.Read(topic) == nil {
+		oldCate := topic.Category
+		_, err1 := orm.Delete(topic)
+		if err1 != nil {
+			return err1
+		}
+		cate := new(Category)
+		qs := orm.QueryTable("category")
+		err = qs.Filter("title", oldCate).One(cate)
+		cate.TopicCount--
+		_, err = orm.Update(cate)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

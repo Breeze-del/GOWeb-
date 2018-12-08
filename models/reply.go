@@ -25,7 +25,7 @@ func S2int64(id string) (int64, error) {
 }
 
 // ***********************topic 操作**************************
-// 添加评论信息
+// 添加评论信息,更新文章回复数和最近回复时间
 func AddReply(id, nickname, content string) error {
 	o := orm.NewOrm()
 	tid, err := S2int64(id)
@@ -39,13 +39,28 @@ func AddReply(id, nickname, content string) error {
 		Created:  time.Now(),
 	}
 	_, err1 := o.Insert(reply)
-	return err1
+	if err1 != nil {
+		return err1
+	}
+	topic := new(Topic)
+	topic.Id = tid
+	if o.Read(topic) == nil {
+		topic.ReplyCount++
+		topic.ReplyTime = time.Now()
+		_, err = o.Update(topic)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
-// 删除评论
-func DeleteReply(id string) error {
+// 删除评论,更新文章回复数和最近回复时间
+// id 为回复的ID
+func DeleteReply(id, tid string) error {
 	o := orm.NewOrm()
 	idNum, err := S2int64(id)
+	topicId, err := S2int64(tid)
 	if err != nil {
 		return err
 	}
@@ -55,6 +70,16 @@ func DeleteReply(id string) error {
 	_, err1 := o.Delete(reply)
 	if err1 != nil {
 		return err1
+	}
+	topic := new(Topic)
+	topic.Id = topicId
+	if o.Read(topic) == nil {
+		topic.ReplyCount--
+		topic.ReplyTime = time.Now()
+		_, err = o.Update(topic)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
