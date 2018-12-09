@@ -15,14 +15,14 @@ func (c *ReplyController) Add() {
 		c.Redirect("/login", 302)
 		return
 	}
-	id := c.Input().Get("tid")
+	tid := c.Input().Get("tid")
 	nickname := c.Input().Get("nickname")
 	content := c.Input().Get("content")
-	err := models.AddReply(id, nickname, content)
+	err := models.AddReply(tid, nickname, content)
 	if err != nil {
 		beego.Error(err)
 	}
-	c.Redirect(fmt.Sprint("/topic/view/", id), 302)
+	c.Redirect(fmt.Sprint("/topic/view/", tid), 302)
 }
 
 func (c *ReplyController) Delete() {

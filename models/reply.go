@@ -42,11 +42,12 @@ func AddReply(id, nickname, content string) error {
 	if err1 != nil {
 		return err1
 	}
-	topic := new(Topic)
-	topic.Id = tid
+	topic := &Topic{
+		Id: tid,
+	}
 	if o.Read(topic) == nil {
 		topic.ReplyCount++
-		topic.ReplyTime = time.Now()
+		topic.ReplyTime = reply.Created
 		_, err = o.Update(topic)
 		if err != nil {
 			return err
@@ -65,7 +66,8 @@ func DeleteReply(id, tid string) error {
 		return err
 	}
 	reply := &Reply{
-		Id: idNum,
+		Id:  idNum,
+		Tid: topicId,
 	}
 	_, err1 := o.Delete(reply)
 	if err1 != nil {
@@ -73,9 +75,20 @@ func DeleteReply(id, tid string) error {
 	}
 	topic := new(Topic)
 	topic.Id = topicId
+	// 精确化最后评论时间和评论数
+	replies := make([]*Reply, 0)
+	qs := o.QueryTable("reply")
+	_, err = qs.Filter("tid", topicId).OrderBy("-created").All(&replies)
+	if err != nil {
+		return err
+	}
 	if o.Read(topic) == nil {
-		topic.ReplyCount--
-		topic.ReplyTime = time.Now()
+		topic.ReplyCount = int64(len(replies))
+		if len(replies) == 0 {
+			topic.ReplyTime = time.Now()
+		} else {
+			topic.ReplyTime = replies[0].Created
+		}
 		_, err = o.Update(topic)
 		if err != nil {
 			return err
