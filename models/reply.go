@@ -42,6 +42,7 @@ func AddReply(id, nickname, content string) error {
 	if err1 != nil {
 		return err1
 	}
+	// 更新文章的回复时间和回复数
 	topic := &Topic{
 		Id: tid,
 	}
@@ -108,4 +109,25 @@ func GetAllReplies(tid string) ([]*Reply, error) {
 	replies := make([]*Reply, 0)
 	_, err1 := qs.Filter("tid", id).All(&replies)
 	return replies, err1
+}
+
+// 删除相关文章所有评论
+func DeleteReplies(tid string) error {
+	id, err := S2int64(tid)
+	if err != nil {
+		return err
+	}
+	o := orm.NewOrm()
+	replies := make([]*Reply, 0)
+	_, err = o.QueryTable("reply").Filter("tid", id).Delete()
+	if err != nil {
+		return err
+	}
+	if len(replies) > 0 {
+		_, err := o.Delete(replies)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

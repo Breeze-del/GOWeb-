@@ -96,9 +96,14 @@ func (c *TopicController) Delete() {
 		c.Redirect("/login", 302)
 		return
 	}
-	err := models.DeleteTopic(c.Ctx.Input.Param("0"))
+	tid := c.Ctx.Input.Param("0")
+	err := models.DeleteTopic(tid)
 	if err != nil {
 		beego.Error(err.Error())
 	}
-	c.Redirect("/", 302)
+	err = models.DeleteReplies(tid)
+	if err != nil {
+		beego.Error(err.Error())
+	}
+	c.Redirect("/topic", 302)
 }

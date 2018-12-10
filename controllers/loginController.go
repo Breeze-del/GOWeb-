@@ -53,18 +53,17 @@ func checkAccount(ctx *context.Context) bool {
 	//context可以从controller中获得 也可以从context包中获得
 	//他是对request（input）和response（output）的封装
 
-	//ck, err := ctx.Request.Cookie("usname")
-	//if err != nil {
-	//	return false
-	//}
-	//usname := ck.Value
-	//ck, err1 := ctx.Request.Cookie("password")
-	//if err1 != nil {
-	//	return false
-	//}
-	//password := ck.Value
-	//// 通过cookie获得的account与配置文件中account比较来确定 是不是处于登陆状态
-	//return beego.AppConfig.String("usname") == usname &&
-	//	beego.AppConfig.String("password") == password
-	return true
+	ck, err := ctx.Request.Cookie("usname")
+	if err != nil {
+		return false
+	}
+	usname := ck.Value
+	ck, err1 := ctx.Request.Cookie("password")
+	if err1 != nil {
+		return false
+	}
+	password := ck.Value
+	// 通过cookie获得的account与配置文件中account比较来确定 是不是处于登陆状态
+	return beego.AppConfig.String("usname") == usname &&
+		beego.AppConfig.String("password") == password
 }
