@@ -258,3 +258,13 @@ func DeleteTopic(tid string) error {
 	}
 	return nil
 }
+
+// 删除分类的所有文章 -- 删除分类，那么把分了所有文章删除
+func DeleteTopics(category string) error {
+	o := orm.NewOrm()
+	_, err := o.QueryTable("topic").Filter("category", category).Delete()
+	if err != nil {
+		return err
+	}
+	return nil
+}

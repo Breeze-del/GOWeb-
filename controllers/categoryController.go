@@ -27,10 +27,16 @@ func (c *CategoryController) Get() {
 		return
 	case "del":
 		name := c.Input().Get("id")
+		// 删除分类的所有文章
+		category := c.Input().Get("category")
 		if len(name) == 0 {
 			break
 		}
 		err := models.DeleteCategory(name)
+		if err != nil {
+			beego.Error(err)
+		}
+		err = models.DeleteTopics(category)
 		if err != nil {
 			beego.Error(err)
 		}

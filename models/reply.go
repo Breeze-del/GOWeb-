@@ -111,23 +111,16 @@ func GetAllReplies(tid string) ([]*Reply, error) {
 	return replies, err1
 }
 
-// 删除相关文章所有评论
+// 删除相关文章所有评论 -- 当删除文章时候 传入文章id 然后删除文章所有的评论
 func DeleteReplies(tid string) error {
 	id, err := S2int64(tid)
 	if err != nil {
 		return err
 	}
 	o := orm.NewOrm()
-	replies := make([]*Reply, 0)
 	_, err = o.QueryTable("reply").Filter("tid", id).Delete()
 	if err != nil {
 		return err
-	}
-	if len(replies) > 0 {
-		_, err := o.Delete(replies)
-		if err != nil {
-			return err
-		}
 	}
 	return nil
 }
