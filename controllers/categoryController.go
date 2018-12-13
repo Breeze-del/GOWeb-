@@ -45,7 +45,6 @@ func (c *CategoryController) Get() {
 	}
 	c.Data["IsCategory"] = true
 	c.Data["IsLogin"] = checkAccount(c.Ctx)
-
 	var err error
 	c.Data["categories"], err = models.GetAllCategories()
 	if err != nil {
