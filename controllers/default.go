@@ -8,6 +8,7 @@ type MainController struct {
 	beego.Controller
 }
 
+// 样例
 func (c *MainController) Get() {
 	// 这里的值会在index.tpl中被用到
 	c.TplName = "index.tpl"
