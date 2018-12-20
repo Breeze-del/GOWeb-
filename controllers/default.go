@@ -17,6 +17,7 @@ func (c *MainController) Get() {
 	c.Data["TrueCond"] = true
 	c.Data["FalseCond"] = false
 	// 结构体
+
 	type u struct {
 		Name string
 		Age  int
