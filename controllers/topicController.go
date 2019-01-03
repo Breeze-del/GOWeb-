@@ -9,6 +9,13 @@ type TopicController struct {
 	beego.Controller
 }
 
+// URL注册比通过反射获取方法 速度更快
+func (c *TopicController) URLMapping() {
+	c.Mapping("Add", c.Add)
+	c.Mapping("View", c.View)
+	c.Mapping("Modify", c.Modify)
+}
+
 // 不加*是访问不到views下的资源的
 func (c *TopicController) Get() {
 	c.Data["IsTopic"] = true

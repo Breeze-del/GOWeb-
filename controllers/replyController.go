@@ -10,6 +10,10 @@ type ReplyController struct {
 	beego.Controller
 }
 
+func (c *ReplyController) URLMapping() {
+	c.Mapping("Add", c.Add)
+	c.Mapping("delete", c.Delete)
+}
 func (c *ReplyController) Add() {
 	if !(checkAccount(c.Ctx)) {
 		c.Redirect("/login", 302)
