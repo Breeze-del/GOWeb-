@@ -2,6 +2,8 @@ package models
 
 import (
 	"github.com/astaxie/beego/orm"
+	"os"
+	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -117,18 +119,19 @@ func GetAllCategories() ([]*Category, error) {
 
 // ***********************topic 操作**************************
 // 添加topic到数据库
-func AddTopic(title, content, lable, category string) error {
+func AddTopic(title, content, lable, category, attachemnt string) error {
 	// 处理标签 空格作为多个标签的分隔符
-	lable = "$" + strings.Join(strings.Split(lable, " "), "#$") + "#"
+	lable = "$" + strings.Replace(lable, " ", "#$", -1) + "#"
 
 	orm := orm.NewOrm()
 	topic := &Topic{
-		Title:    title,
-		Content:  content,
-		Created:  time.Now(),
-		Updated:  time.Now(),
-		Category: category,
-		Lables:   lable,
+		Title:      title,
+		Content:    content,
+		Created:    time.Now(),
+		Updated:    time.Now(),
+		Category:   category,
+		Lables:     lable,
+		Attachment: attachemnt,
 	}
 	_, err := orm.Insert(topic)
 	if err != nil {
@@ -155,13 +158,13 @@ func GetAllTopics(cate, lable string, isDesc bool) ([]*Topic, error) {
 	orm := orm.NewOrm()
 	topics := make([]*Topic, 0)
 	qs := orm.QueryTable("topic")
+	if len(cate) > 0 {
+		qs = qs.Filter("category", cate)
+	}
+	if len(lable) > 0 {
+		qs = qs.Filter("lables__contains", "$"+lable+"#")
+	}
 	if isDesc {
-		if len(cate) > 0 {
-			qs = qs.Filter("category", cate)
-		}
-		if len(lable) > 0 {
-			qs = qs.Filter("lables__contains", "$"+lable+"#")
-		}
 		_, err := qs.OrderBy("-created").All(&topics)
 		return topics, err
 	} else {
@@ -187,22 +190,20 @@ func GetTopic(id string) (*Topic, error) {
 	topic.Views++
 	_, err = orm.Update(topic)
 
-	topic.Lables = strings.Replace(
-		strings.Replace(
-			topic.Lables, "#", " ", -1),
-		"$", "", -1)
+	lable := topic.Lables[1 : len(topic.Lables)-1]
+	topic.Lables = strings.Replace(lable, "#$", " ", -1)
 	return topic, err
 }
 
 // 修改更新文章
-func ModifyTopic(tid, title, content, lable, category string) error {
+func ModifyTopic(tid, title, content, lable, category, attachment string) error {
 	IdNum, err := strconv.ParseInt(tid, 10, 64)
-	lable = "$" + strings.Join(strings.Split(lable, ""), "#$") + "#"
+	lable = "$" + strings.Replace(lable, " ", "#$", -1) + "#"
 	if err != nil {
 		return err
 	}
 	// 表示未修改之前的分类
-	var oldCate string
+	var oldCate, oldAttach string
 	orm := orm.NewOrm()
 	topic := &Topic{
 		Id: IdNum,
@@ -211,12 +212,19 @@ func ModifyTopic(tid, title, content, lable, category string) error {
 	// err1==nil 说明找到了id为idnum的记录 然后进行修改
 	if err1 == nil {
 		oldCate = topic.Category
+		oldAttach = topic.Attachment
 
 		topic.Title = title
 		topic.Category = category
 		topic.Content = content
 		topic.Updated = time.Now()
 		topic.Lables = lable
+		if len(attachment) > 0 {
+			topic.Attachment = attachment
+			os.Remove(path.Join("attachment", oldAttach))
+		} else {
+			topic.Attachment = oldAttach
+		}
 		_, err2 := orm.Update(topic)
 		if err2 != nil {
 			return err2
@@ -256,6 +264,10 @@ func DeleteTopic(tid string) error {
 	// 查询出文章
 	if orm.Read(topic) == nil {
 		oldCate := topic.Category
+		oldAtch := topic.Attachment
+		if len(oldAtch) > 0 {
+			os.Remove(path.Join("attachment", oldAtch))
+		}
 		_, err1 := orm.Delete(topic)
 		if err1 != nil {
 			return err1

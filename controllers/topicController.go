@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/astaxie/beego"
 	"myapp/models"
+	"path"
 	"strings"
 )
 
@@ -41,13 +42,30 @@ func (c *TopicController) Post() {
 	category := c.Input().Get("category")
 	tid := c.Input().Get("tid")
 	lable := c.Input().Get("lable")
-	var err error
+
+	// 获取附件
+	_, fh, err := c.GetFile("attachment")
+	if err != nil {
+		beego.Error(err)
+	}
+	// 文件名
+	var attachment string
+	if fh != nil {
+		// 保存文件
+		attachment = fh.Filename
+		beego.Info(attachment)
+		err = c.SaveToFile("attachment", path.Join("attachment", attachment))
+		if err != nil {
+			beego.Error(err)
+		}
+	}
+
 	if len(tid) == 0 {
 		// 不存在 是添加操作
-		err = models.AddTopic(title, content, lable, category)
+		err = models.AddTopic(title, content, lable, category, attachment)
 	} else {
 		// 存在tid 说明是修改操作
-		err = models.ModifyTopic(tid, title, content, lable, category)
+		err = models.ModifyTopic(tid, title, content, lable, category, attachment)
 	}
 	if err != nil {
 		beego.Error(err)
@@ -63,7 +81,9 @@ func (c *TopicController) Add() {
 
 // 预览文章 -- topic/view/123
 func (c *TopicController) View() {
-	tid := c.Ctx.Input.Param("0")
+	reqUrl := c.Ctx.Request.RequestURI
+	i := strings.LastIndex(reqUrl, "/")
+	tid := reqUrl[i+1:]
 	topic, err := models.GetTopic(tid)
 	if err != nil {
 		beego.Error(err.Error())

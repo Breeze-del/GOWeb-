@@ -23,7 +23,7 @@ func init() {
 	beego.AutoRouter(&controllers.TopicController{})
 	// Reply 的自动路由
 	beego.AutoRouter(&controllers.ReplyController{})
-
+	beego.Router("/attachment/:all", &controllers.FileController{})
 	// 基本路由方法
 	beego.Get("/hello", func(ctx *context.Context) {
 		ctx.Output.Body([]byte("hello world"))
