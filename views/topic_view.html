@@ -4,8 +4,14 @@
 <body>
     {{template "navbar".}}
     <div class="container">
+        {{$label := .lables}}
         {{with .topic}}
         <h1>{{ .Title}}</h1>
+            <h5>
+                {{range $label}}
+                <a href="/?lable={{.}}">{{.}}</a>
+                {{end}}
+            </h5>
         {{ .Content}}
         {{end}}
     </div>

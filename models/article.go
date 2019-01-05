@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/astaxie/beego/orm"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -30,6 +31,7 @@ type Topic struct {
 	Uid      int64
 	Title    string
 	Category string
+	Lables   string
 	// 建表 大小5000
 	Content string `orm:"size(5000)"`
 	// 附件
@@ -115,7 +117,10 @@ func GetAllCategories() ([]*Category, error) {
 
 // ***********************topic 操作**************************
 // 添加topic到数据库
-func AddTopic(title, content, category string) error {
+func AddTopic(title, content, lable, category string) error {
+	// 处理标签 空格作为多个标签的分隔符
+	lable = "$" + strings.Join(strings.Split(lable, " "), "#$") + "#"
+
 	orm := orm.NewOrm()
 	topic := &Topic{
 		Title:    title,
@@ -123,6 +128,7 @@ func AddTopic(title, content, category string) error {
 		Created:  time.Now(),
 		Updated:  time.Now(),
 		Category: category,
+		Lables:   lable,
 	}
 	_, err := orm.Insert(topic)
 	if err != nil {
@@ -145,23 +151,23 @@ func AddTopic(title, content, category string) error {
 
 // 获得所有topics
 // 参数：true表示按创建时间反序排列 false表示按照id正序排列
-func GetAllTopics(cate string, isDesc bool) ([]*Topic, error) {
+func GetAllTopics(cate, lable string, isDesc bool) ([]*Topic, error) {
 	orm := orm.NewOrm()
 	topics := make([]*Topic, 0)
 	qs := orm.QueryTable("topic")
 	if isDesc {
-		// orderBy 对查询结果进行排序 +正序 -反序
-		_, err := qs.OrderBy("-created").All(topics)
-		return topics, err
-	} else {
 		if len(cate) > 0 {
-			// 保留下qs 就是保留下数据库操作的结果
 			qs = qs.Filter("category", cate)
 		}
+		if len(lable) > 0 {
+			qs = qs.Filter("lables__contains", "$"+lable+"#")
+		}
+		_, err := qs.OrderBy("-created").All(&topics)
+		return topics, err
+	} else {
 		_, err := qs.All(&topics)
 		return topics, err
 	}
-	return nil, nil
 }
 
 // 通过id获取到文章
@@ -180,12 +186,18 @@ func GetTopic(id string) (*Topic, error) {
 	// 浏览数加1
 	topic.Views++
 	_, err = orm.Update(topic)
+
+	topic.Lables = strings.Replace(
+		strings.Replace(
+			topic.Lables, "#", " ", -1),
+		"$", "", -1)
 	return topic, err
 }
 
 // 修改更新文章
-func ModifyTopic(tid, title, content, category string) error {
+func ModifyTopic(tid, title, content, lable, category string) error {
 	IdNum, err := strconv.ParseInt(tid, 10, 64)
+	lable = "$" + strings.Join(strings.Split(lable, ""), "#$") + "#"
 	if err != nil {
 		return err
 	}
@@ -204,6 +216,7 @@ func ModifyTopic(tid, title, content, category string) error {
 		topic.Category = category
 		topic.Content = content
 		topic.Updated = time.Now()
+		topic.Lables = lable
 		_, err2 := orm.Update(topic)
 		if err2 != nil {
 			return err2

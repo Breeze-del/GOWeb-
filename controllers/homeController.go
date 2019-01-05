@@ -15,7 +15,8 @@ func (c *HomeController) Get() {
 	c.Data["IsLogin"] = checkAccount(c.Ctx)
 	// 获取到cate参数
 	cate := c.Input().Get("cate")
-	topics, err := models.GetAllTopics(cate, false)
+	lable := c.Input().Get("lable")
+	topics, err := models.GetAllTopics(cate, lable, true)
 	if err != nil {
 		beego.Error(err.Error())
 	}

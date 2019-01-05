@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/astaxie/beego"
 	"myapp/models"
+	"strings"
 )
 
 type TopicController struct {
@@ -20,7 +21,7 @@ func (c *TopicController) URLMapping() {
 func (c *TopicController) Get() {
 	c.Data["IsTopic"] = true
 	c.Data["IsLogin"] = checkAccount(c.Ctx)
-	topics, err := models.GetAllTopics("", false)
+	topics, err := models.GetAllTopics("", "", false)
 	if err != nil {
 		beego.Error(err.Error())
 	}
@@ -39,13 +40,14 @@ func (c *TopicController) Post() {
 	content := c.Input().Get("content")
 	category := c.Input().Get("category")
 	tid := c.Input().Get("tid")
+	lable := c.Input().Get("lable")
 	var err error
 	if len(tid) == 0 {
 		// 不存在 是添加操作
-		err = models.AddTopic(title, content, category)
+		err = models.AddTopic(title, content, lable, category)
 	} else {
 		// 存在tid 说明是修改操作
-		err = models.ModifyTopic(tid, title, content, category)
+		err = models.ModifyTopic(tid, title, content, lable, category)
 	}
 	if err != nil {
 		beego.Error(err)
@@ -69,6 +71,7 @@ func (c *TopicController) View() {
 		return
 	}
 	c.Data["topic"] = topic
+	c.Data["lables"] = strings.Split(topic.Lables, " ")
 	// 不知道为什么模板data topicId不能识别
 	c.Data["tid"] = tid
 	//  获取所有评论
