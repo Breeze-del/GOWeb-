@@ -11,6 +11,7 @@ type FileController struct {
 	beego.Controller
 }
 
+// 将文件内容写入到httpResponse中，不好直接创建一个静态目录浏览器直接下载比较好
 func (c *FileController) Get() {
 	// URL为了避免与其他字符冲突，通常会做特殊处理【特殊字符取%+16进制表示】
 	// 将url转回来utf-8
