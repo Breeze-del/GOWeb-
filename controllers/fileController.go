@@ -12,13 +12,14 @@ type FileController struct {
 }
 
 func (c *FileController) Get() {
-	// URL为了避免与其他字符冲突，通常会做特殊处理【16进制表示】
+	// URL为了避免与其他字符冲突，通常会做特殊处理【特殊字符取%+16进制表示】
 	// 将url转回来utf-8
-	filepath, err := url.QueryUnescape(c.Ctx.Request.RequestURI[1:])
+	filepath, err := url.QueryUnescape(c.Ctx.Request.RequestURI[1:]) // 去掉开始的“/”
 	if err != nil {
 		c.Ctx.WriteString(err.Error())
 		return
 	}
+	// 如果以/开头会以为是绝对路径 以./和attachment/... 表示相对路径
 	f, err := os.Open(filepath)
 	if err != nil {
 		c.Ctx.WriteString(err.Error())
